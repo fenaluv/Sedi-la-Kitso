@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sedi La Kitso — Emulator Preview</title>
+<style>
+:root{--maroon:#6e0015;--accent:#b30e25;--gold:#e1b100;--bg:#fff;--text:#222}
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;background:var(--bg);color:var(--text)}
+.topbar{background:var(--maroon);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.topbar h1{margin:0;font-size:18px}.wrapper{display:flex;height:calc(100vh - 52px)}.sidebar{width:320px;background:#f6f5f4;border-right:1px solid #e6e6e6;padding:12px;overflow:auto}.preview{flex:1;background:#fff;display:flex;flex-direction:column;overflow:auto}.controls{display:flex;gap:8px;margin-bottom:12px}.btn{background:var(--accent);color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer;font-weight:700}.small{padding:6px 8px;font-size:0.9rem}.note{font-size:0.9rem;color:#444;margin:8px 0}.container{max-width:980px;margin:18px auto;padding:18px}.site-header{background:var(--maroon);color:#fff;padding:18px;text-align:center;border-radius:6px}.site-nav{display:flex;gap:12px;justify-content:center;margin-top:10px}.site-nav a{color:#fff;text-decoration:none;padding:6px 8px;background:var(--accent);border-radius:6px;font-weight:700}.preview-window{flex:1;overflow:auto;border-top:1px solid #eee}.inner-header{background:var(--maroon);color:#fff;padding:20px;text-align:center}.inner-nav{background:var(--accent);display:flex;gap:10px;justify-content:center;padding:8px}.inner-nav a{color:#fff;text-decoration:none;padding:6px 8px}.inner-container{max-width:980px;margin:18px auto;padding:20px}h2{color:var(--maroon)}h3{color:var(--accent)}.footer{background:var(--maroon);color:#fff;text-align:center;padding:12px;margin-top:18px}.source{background:#111;color:#dcdcdc;padding:12px;border-radius:6px;max-height:60vh;overflow:auto;font-size:12px}
+@media (max-width:900px){.wrapper{flex-direction:column}.sidebar{width:100%;height:260px}.preview{height:calc(100vh - 320px)}}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>Sedi La Kitso — Live Emulator</h1>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      <button class="btn small" id="downloadPage">Download current page</button>
+      <button class="btn small" id="viewSource">View Source</button>
+    </div>
+  </div>
+  <div class="wrapper">
+    <div class="sidebar">
+      <div class="controls">
+        <button class="btn" data-page="home">Home</button>
+        <button class="btn" data-page="about">About</button>
+        <button class="btn" data-page="learn">Learn</button>
+        <button class="btn" data-page="plumbing">Plumbing</button>
+        <button class="btn" data-page="contact">Contact</button>
+      </div>
+      <p class="note">Editor: preview each page. 'View Source' shows HTML of the visible page. 'Download current page' saves the visible page as an HTML file.</p>
+      <h4>Page list</h4>
+      <ul id="pageList">
+        <li data-page="home">home.html — full page</li>
+        <li data-page="about">about.html — full page</li>
+        <li data-page="learn">learn.html — full page</li>
+        <li data-page="plumbing">plumbing.html — full page (expanded lessons + quizzes)</li>
+        <li data-page="contact">contact.html — full page</li>
+      </ul>
+      <hr>
+      <h4>Quick actions</h4>
+      <button class="btn small" id="openAll">Open all pages in new tabs</button>
+      <p class="note">Tip: After reviewing, you can download the ZIP or request edits.</p>
+    </div>
+    <div class="preview">
+      <div class="site-header container">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="flex:1"><h2 style="margin:0">Sedi La Kitso Tech Hub</h2><div style="color:#fff;opacity:0.9">Learn | Fix | Grow</div></div>
+          <div style="text-align:right"><small style="color:#fff">Emulator Preview</small></div>
+        </div>
+        <div class="site-nav" style="margin-top:12px">
+          <a href="#" data-nav="home">Home</a>
+          <a href="#" data-nav="about">About</a>
+          <a href="#" data-nav="learn">Learn</a>
+          <a href="#" data-nav="plumbing">Plumbing</a>
+          <a href="#" data-nav="contact">Contact</a>
+        </div>
+      </div>
+      <div class="preview-window" id="previewWindow"></div>
+      <div style="padding:12px"><div id="sourceContainer" style="display:none"><h4>HTML Source</h4><pre class="source" id="sourcePre"></pre></div></div>
+    </div>
+  </div>
+<script>
+const pages = {
+home: `
+<header class="inner-header"><h1>Sedi La Kitso Tech Hub</h1></header>
+<nav class="inner-nav"></nav>
+<div class="inner-container">
+  <p class="breadcrumb">Home › Welcome</p>
+  <section class="hero">
+    <h2>Empowering Skills Through Technology</h2>
+    <p>Welcome to Sedi La Kitso Tech Hub — where learning meets opportunity. Explore practical skills in plumbing, electrical work, and computer repair with clear, hands-on lessons.</p>
+    <img src="https://placehold.co/900x300/ffffff/6e0015?text=Sedi+La+Kitso+Tech+Hub" alt="Sedi La Kitso" />
+    <p><button class="btn" data-link="plumbing">Start Plumbing Lessons</button></p>
+  </section>
+</div>
+<footer class="footer">A community project by <strong>Sedi La Kitso NPC</strong> | Registration No: 2024/011843/08</footer>
+`,
+about: `
+<header class="inner-header"><h1>About Us</h1></header>
+<div class="inner-container">
+  <p class="breadcrumb">Home › About</p>
+  <section>
+    <h2>About Sedi La Kitso Tech Hub</h2>
+    <p><strong>Sedi La Kitso Tech Hub</strong> was created to share real, hands-on knowledge with our community. We believe everyone should have access to simple, practical education — not just theory.</p>
+    <p>Founded by <strong>Letlhogonolo Ramasilo</strong>, a certified technician with experience in plumbing, electrical systems, and computer troubleshooting, this project started as a way to teach young people and promote self-reliance through technical skills.</p>
+    <img src="https://placehold.co/700x300/ffffff/6e0015?text=Our+Team" alt="Our Team" />
+  </section>
+</div>
+<footer class="footer">A community project by <strong>Sedi La Kitso NPC</strong></footer>
+`,
+learn: `
+<header class="inner-header"><h1>Learn With Us</h1></header>
+<div class="inner-container">
+  <p class="breadcrumb">Home › Learn</p>
+  <section>
+    <h2>Learning Opportunities</h2>
+    <p>We provide short courses and guides designed for quick wins and long-term growth. Courses include:</p>
+    <ul>
+      <li><strong>Understanding Basic Wiring</strong> — safety, tools, and simple home wiring.</li>
+      <li><strong>Fixing a Leaking Tap</strong> — practical repair steps and parts.</li>
+      <li><strong>Common Computer Problems</strong> — troubleshooting and speed improvements.</li>
+      <li><strong>Using a Multimeter</strong> — easy tests for voltage, continuity, and resistance.</li>
+    </ul>
+    <img src="https://placehold.co/800x250/ffffff/6e0015?text=Skills+Training" alt="Training" />
+  </section>
+</div>
+<footer class="footer">A community project by <strong>Sedi La Kitso NPC</strong></footer>
+`,
+plumbing: `
+<header class="inner-header"><h1>Plumbing Masterclass</h1></header>
+<div class="inner-container">
+  <p class="breadcrumb">Home › Plumbing</p>
+  <section>
+    <h2>Introduction to Plumbing</h2>
+    <p>Plumbing is the lifeline of any structure. Understanding water flow, pressure systems, and installation techniques forms the foundation of the trade. This article explores the core elements and modern advancements shaping the profession today.</p>
+    <img src="https://placehold.co/600x300/ffffff/6e0015?text=Plumbing+Tools" alt="Plumbing Tools" />
+  </section>
+  <section>
+    <h3>1. Types of Pipes, Fittings & How They Work</h3>
+    <p>Plumbing systems rely on a mix of pipes and fittings that transport water safely and reliably. Choosing the correct material is about balancing cost, durability, and the job's demands. <strong>PVC</strong> is widely used for cold-water supply and drainage due to its affordability and resistance to corrosion. <strong>Copper</strong> is the classic material for hot and cold water, offering longevity and high pressure tolerance. <strong>PEX</strong> is flexible, reducing fittings and simplifying installation. Fittings like elbows, tees, reducers, couplings, and valves control direction and flow.</p>
+    <p>Consider temperature, pressure ratings, and pipe support when designing a system. Long runs need thought for thermal expansion and adequate supports to prevent stress on joints.</p>
+    <div class="quiz"><h4>Quick Quiz — Pipes</h4><p>Which pipe is most flexible for tight installs?</p><label><input type="radio" name="p1" value="PVC"> PVC</label><br><label><input type="radio" name="p1" value="PEX"> PEX</label><br><label><input type="radio" name="p1" value="Copper"> Copper</label><br><button class="btn" onclick="(function(){ const sel=document.querySelector('input[name=p1]:checked'); alert(sel? (sel.value==='PEX'? 'Correct — PEX is flexible':'Incorrect') : 'Select an answer'); })()">Check</button></div>
+  </section>
+  <section>
+    <h3>2. Fixing a Leaking Tap from Start to Finish</h3>
+    <p>A leaking tap may seem small but wastes water and signals wear. Always shut off the water supply, drain the line, disassemble carefully and inspect washers or cartridges. Replace identical parts and seal with plumbers' grease where appropriate. After reassembly, pressurize slowly and watch for leaks. Document repairs to help future diagnostics.</p>
+    <div class="quiz"><h4>Quick Quiz — Leaking Tap</h4><p>What is the first step before repairing a leaking tap?</p><label><input type="radio" name="p2" value="TurnOff"> Turn off the water supply</label><br><label><input type="radio" name="p2" value="Remove"> Remove the tap</label><br><button class="btn" onclick="(function(){ const sel=document.querySelector('input[name=p2]:checked'); alert(sel? (sel.value==='TurnOff'? 'Correct' : 'Incorrect') : 'Select an answer'); })()">Check</button></div>
+  </section>
+  <section>
+    <h3>3. How to Read Plumbing Diagrams & Plans</h3>
+    <p>Plumbing diagrams are the roadmap for installation and maintenance. Read the legend, follow color coding for hot/cold, note slopes for drainage, and cross-reference with structural plans. Proper reading prevents costly mistakes during installation.</p>
+    <div class="quiz"><h4>Quick Quiz — Diagrams</h4><p>What color commonly indicates cold water lines on diagrams?</p><label><input type="radio" name="p3" value="Blue"> Blue</label><br><label><input type="radio" name="p3" value="Red"> Red</label><br><button class="btn" onclick="(function(){ const sel=document.querySelector('input[name=p3]:checked'); alert(sel? (sel.value==='Blue'? 'Correct' : 'Incorrect') : 'Select an answer'); })()">Check</button></div>
+  </section>
+  <section>
+    <h3>4. Installing a Toilet & Connecting Water Supply</h3>
+    <p>Inspect the flange, use a new wax ring, lower the bowl evenly, and tighten bolts alternately to avoid cracking porcelain. Use a flexible water supply hose and test several flush cycles to ensure there's no leak.</p>
+    <div class="quiz"><h4>Quick Quiz — Toilet Installation</h4><p>What creates the watertight seal between a toilet and the drain?</p><label><input type="radio" name="p4" value="Wax"> Wax ring</label><br><label><input type="radio" name="p4" value="Rubber"> Rubber only</label><br><button class="btn" onclick="(function(){ const sel=document.querySelector('input[name=p4]:checked'); alert(sel? (sel.value==='Wax'? 'Correct' : 'Incorrect') : 'Select an answer'); })()">Check</button></div>
+  </section>
+  <section>
+    <h3>5. Preventative Maintenance & Water‑Saving Tips</h3>
+    <p>Monthly checks, cleaning aerators, insulating pipes, and installing low-flow fixtures save water and prevent damage. Use baking soda and vinegar for drains rather than harsh chemicals.</p>
+    <div class="quiz"><h4>Quick Quiz — Maintenance</h4><p>How often should you check for leaks visually?</p><label><input type="radio" name="p5" value="Monthly"> Monthly</label><br><label><input type="radio" name="p5" value="Yearly"> Yearly</label><br><button class="btn" onclick="(function(){ const sel=document.querySelector('input[name=p5]:checked'); alert(sel? (sel.value==='Monthly'? 'Correct' : 'Incorrect') : 'Select an answer'); })()">Check</button></div>
+  </section>
+</div>
+<footer class="footer">A community project by <strong>Sedi La Kitso NPC</strong></footer>
+`,
+contact: `
+<header class="inner-header"><h1>Contact Us</h1></header>
+<div class="inner-container">
+  <p class="breadcrumb">Home › Contact</p>
+  <section>
+    <h2>Get in touch</h2>
+    <p>Email: sedilakitsotechhub@gmail.com</p>
+    <p>WhatsApp: +27 [your number]</p>
+    <img src="https://placehold.co/600x200/ffffff/6e0015?text=Contact+Us" alt="Contact" />
+  </section>
+</div>
+<footer class="footer">A community project by <strong>Sedi La Kitso NPC</strong></footer>
+`
+};
+
+const previewWindow = document.getElementById('previewWindow');
+function loadPage(name){ previewWindow.innerHTML = '<div class="container">'+pages[name]+'</div>'; document.getElementById('sourceContainer').style.display='none'; }
+loadPage('home');
+
+document.querySelectorAll('[data-page]').forEach(btn=> btn.addEventListener('click', ()=> loadPage(btn.getAttribute('data-page'))));
+document.querySelectorAll('[data-nav]').forEach(a=> a.addEventListener('click', ()=> loadPage(a.getAttribute('data-nav'))));
+document.addEventListener('click', function(e){ if(e.target.matches('[data-link]')){ loadPage(e.target.getAttribute('data-link')); } });
+
+document.getElementById('viewSource').addEventListener('click', function(){
+  const html = previewWindow.innerHTML;
+  document.getElementById('sourcePre').textContent = html;
+  document.getElementById('sourceContainer').style.display = 'block';
+  document.getElementById('sourcePre').scrollTop = 0;
+});
+
+document.getElementById('downloadPage').addEventListener('click', function(){
+  const css = document.querySelector('style').textContent;
+  const html = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Downloaded Page</title><style>'+css+'</style></head><body>'+previewWindow.innerHTML+'</body></html>';
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='sedi_la_kitso_page.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+
+document.getElementById('openAll').addEventListener('click', function(){
+  Object.keys(pages).forEach(k => {
+    const w = window.open();
+    w.document.write('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+k+'</title><style>'+document.querySelector('style').textContent+'</style></head><body><div class="container">'+pages[k]+'</div></body></html>');
+    w.document.close();
+  });
+});
+</script>
+</body>
+</html>
